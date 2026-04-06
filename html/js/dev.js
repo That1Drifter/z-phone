@@ -19,20 +19,20 @@
     };
 
     const applicationConfig = {
-        phone: { app: "phone", tooltipText: "Phone", icon: "dialer.svg", tooltipPos: "top", style: "font-size: 3.3vh", job: false, blockedjobs: [], slot: 1, Alerts: 0 },
-        message: { app: "message", tooltipText: "Messages", icon: "messages.svg", tooltipPos: "top", style: "font-size: 3.3vh", job: false, blockedjobs: [], slot: 2, Alerts: 2 },
+        phone: { app: "phone", tooltipText: "Phone", icon: "dialer.svg", job: false, blockedjobs: [], slot: 1, Alerts: 0 },
+        message: { app: "message", tooltipText: "Messages", icon: "messages.svg", job: false, blockedjobs: [], slot: 2, Alerts: 2 },
         camera: { app: "camera", tooltipText: "Camera", icon: "camera.svg", job: false, blockedjobs: [], slot: 3, Alerts: 0 },
         settings: { app: "settings", tooltipText: "Settings", icon: "settings.svg", job: false, blockedjobs: [], slot: 4, Alerts: 0 },
-        ping: { app: "ping", tooltipText: "Ping", icon: "map.svg", tooltipPos: "top", style: "font-size: 3.3vh", job: false, blockedjobs: [], slot: 5, Alerts: 0 },
-        mail: { app: "mail", tooltipText: "Mail", icon: "mail.svg", style: "font-size: 3vh", job: false, blockedjobs: [], slot: 6, Alerts: 1 },
-        proxi: { app: "proxi", tooltipText: "Proxi", icon: "proxi.svg", style: "font-size: 2vh", job: false, blockedjobs: [], slot: 7, Alerts: 0 },
-        pulses: { app: "pulses", tooltipText: "Pulses", icon: "pulses.svg", tooltipPos: "top", job: false, blockedjobs: [], slot: 8, Alerts: 0 },
-        party: { app: "party", tooltipText: "Party App", icon: "party.svg", style: "color: #78bdfd; font-size: 2.7vh", job: false, blockedjobs: [], slot: 9, Alerts: 0 },
-        calculator: { app: "calculator", tooltipText: "Calculator", icon: "calculator.svg", tooltipPos: "bottom", style: "font-size: 2.5vh", job: false, blockedjobs: [], slot: 10, Alerts: 0 },
-        gallery: { app: "gallery", tooltipText: "Gallery", icon: "gallery.svg", tooltipPos: "bottom", style: "font-size: 2.7vh", job: false, blockedjobs: [], slot: 11, Alerts: 0 },
-        garage: { app: "garage", tooltipText: "Garages", icon: "garages.svg", style: "font-size: 3.3vh", job: false, blockedjobs: [], slot: 12, Alerts: 0 },
-        bank: { app: "bank", tooltipText: "Bank", icon: "fleeca.svg", style: "font-size: 2.7vh", job: false, blockedjobs: [], slot: 13, Alerts: 0 },
-        services: { app: "services", tooltipText: "Services", icon: "services.svg", tooltipPos: "bottom", style: "font-size: 3vh", job: false, blockedjobs: [], slot: 14, Alerts: 0 }
+        ping: { app: "ping", tooltipText: "Ping", icon: "map.svg", job: false, blockedjobs: [], slot: 5, Alerts: 0 },
+        mail: { app: "mail", tooltipText: "Mail", icon: "mail.svg", job: false, blockedjobs: [], slot: 6, Alerts: 1 },
+        proxi: { app: "proxi", tooltipText: "Proxi", icon: "proxi.svg", job: false, blockedjobs: [], slot: 7, Alerts: 0 },
+        pulses: { app: "pulses", tooltipText: "Pulses", icon: "pulses.svg", job: false, blockedjobs: [], slot: 8, Alerts: 0 },
+        party: { app: "party", tooltipText: "Party App", icon: "party.svg", job: false, blockedjobs: [], slot: 9, Alerts: 0 },
+        calculator: { app: "calculator", tooltipText: "Calculator", icon: "calculator.svg", job: false, blockedjobs: [], slot: 10, Alerts: 0 },
+        gallery: { app: "gallery", tooltipText: "Gallery", icon: "gallery.svg", job: false, blockedjobs: [], slot: 11, Alerts: 0 },
+        garage: { app: "garage", tooltipText: "Garages", icon: "garages.svg", job: false, blockedjobs: [], slot: 12, Alerts: 0 },
+        bank: { app: "bank", tooltipText: "Bank", icon: "fleeca.svg", job: false, blockedjobs: [], slot: 13, Alerts: 0 },
+        services: { app: "services", tooltipText: "Services", icon: "services.svg", job: false, blockedjobs: [], slot: 14, Alerts: 0 }
     };
 
     function clone(data) {

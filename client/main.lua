@@ -135,6 +135,61 @@ local function updateTime()
     end
 end
 
+local function normalizeImageUrl(url)
+    if type(url) ~= 'string' then return nil end
+    url = url:gsub('\\/', '/')
+    url = url:match('^%s*(.-)%s*$')
+    url = url and url:gsub('^"(.*)"$', '%1') or url
+    if not url or #url < 8 or #url > 1000 then return nil end
+
+    if url:sub(1, 2) == '//' then
+        url = 'https:' .. url
+    end
+
+    local lowerUrl = url:lower()
+    if not lowerUrl:match('^https?://') then return nil end
+    return url
+end
+
+local function extractUploadedImageUrl(uploadData)
+    if type(uploadData) ~= 'string' or uploadData == '' then
+        return nil
+    end
+
+    local directUrl = normalizeImageUrl(uploadData)
+    if directUrl then
+        return directUrl
+    end
+
+    local ok, decoded = pcall(json.decode, uploadData)
+    if not ok or type(decoded) ~= 'table' then return nil end
+
+    if decoded[1] and type(decoded[1]) == 'table' then
+        decoded = decoded[1]
+    end
+
+    if decoded.body and type(decoded.body) == 'table' then
+        decoded = decoded.body
+    end
+
+    if decoded.attachments and decoded.attachments[1] then
+        local attachment = decoded.attachments[1]
+        local attachmentUrl = normalizeImageUrl(attachment.proxy_url or attachment.url)
+        if attachmentUrl then
+            return attachmentUrl
+        end
+    end
+
+    return normalizeImageUrl(decoded.url or decoded.proxy_url)
+end
+
+local function requestCameraUpload(webhook, callback)
+    exports['screenshot-basic']:requestScreenshotUpload(webhook, 'files[]', {
+        encoding = 'png',
+        quality = 1.0,
+    }, callback)
+end
+
 local PublicPhoneobject = {
     -2103798695,1158960338,
     1281992692,1511539537,
@@ -787,6 +842,22 @@ RegisterNUICallback('SharePhoneContact', function(data, cb)
 end)
 
 RegisterNUICallback("TakePhoto", function(_, cb)
+    local function finishCameraCapture(result)
+        DestroyMobilePhone()
+        CellCamActivate(false, false)
+
+        if result and result.success and result.url then
+            TriggerServerEvent('qb-phone:server:getImageFromGallery')
+            cb(json.encode(result.url))
+            QBCore.Functions.Notify('Photo saved!', 'success')
+        else
+            cb(json.encode({ url = nil }))
+            QBCore.Functions.Notify((result and result.message) or 'Photo upload failed.', 'error')
+        end
+
+        OpenPhone()
+    end
+
     SetNuiFocus(false, false)
     CreateMobilePhone(1)
     CellCamActivate(true, true)
@@ -802,21 +873,36 @@ RegisterNUICallback("TakePhoto", function(_, cb)
             break
         elseif IsControlJustPressed(1, 176) then
             QBCore.Functions.Notify('Touching up photo...', 'primary')
-            QBCore.Functions.TriggerCallback('qb-phone:server:CaptureAndUploadPhoto', function(result)
-                DestroyMobilePhone()
-                CellCamActivate(false, false)
 
-                if result and result.success and result.url then
-                    TriggerServerEvent('qb-phone:server:getImageFromGallery')
-                    cb(json.encode(result.url))
-                    QBCore.Functions.Notify('Photo saved!', 'success')
-                else
-                    cb(json.encode({ url = nil }))
-                    QBCore.Functions.Notify((result and result.message) or 'Photo upload failed.', 'error')
+            if GetResourceState('screenshot-basic') ~= 'started' then
+                finishCameraCapture({ success = false, message = 'screenshot-basic is not started.' })
+                break
+            end
+
+            local webhook = tostring(Config.Webhook or ''):match('^%s*(.-)%s*$')
+            if webhook == '' then
+                finishCameraCapture({ success = false, message = 'Camera webhook is not configured.' })
+                break
+            end
+
+            if webhook:find('discord.com/api/webhooks', 1, true) or webhook:find('discordapp.com/api/webhooks', 1, true) then
+                if not webhook:find('wait=', 1, true) then
+                    webhook = webhook .. (webhook:find('?', 1, true) and '&wait=true' or '?wait=true')
+                end
+            end
+
+            requestCameraUpload(webhook, function(uploadData)
+                local imageUrl = extractUploadedImageUrl(uploadData)
+                if not imageUrl then
+                    finishCameraCapture({ success = false, message = 'Upload did not return an image URL.' })
+                    return
                 end
 
-                OpenPhone()
+                QBCore.Functions.TriggerCallback('qb-phone:server:SaveCapturedPhoto', function(saveResult)
+                    finishCameraCapture(saveResult)
+                end, imageUrl)
             end)
+
             break
         end
         HideHudComponentThisFrame(7)

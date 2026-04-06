@@ -2,18 +2,27 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 -- Functions
 
-local function findVehFromPlateAndLocate(plate)
-    local gameVehicles = QBCore.Functions.GetVehicles()
-    for i = 1, #gameVehicles do
-        local vehicle = gameVehicles[i]
-        if DoesEntityExist(vehicle) then
-            if QBCore.Functions.GetPlate(vehicle) == plate then
-                local vehCoords = GetEntityCoords(vehicle)
-                SetNewWaypoint(vehCoords.x, vehCoords.y)
-                return true
-            end
+local function notifyGarage(title, text, color)
+    TriggerEvent('qb-phone:client:CustomNotification', title, text, 'fas fa-car', color, 2500)
+end
+
+local function trackVehicleByPlate(plate)
+    if type(plate) ~= 'string' or plate == '' then
+        return false
+    end
+
+    if GetResourceState('z-garages') == 'started' then
+        local success = pcall(function()
+            exports['z-garages']:TrackVehicleByPlate(plate)
+        end)
+
+        if success then
+            return true
         end
     end
+
+    TriggerEvent('qb-garages:client:TrackVehicleByPlate', plate)
+    return true
 end
 
 -- NUI Callback
@@ -31,15 +40,10 @@ RegisterNUICallback('gps-vehicle-garage', function(data, cb)
     end
 
     local veh = data.veh
-    if veh.state == 'In' then
-        if veh.parkingspot then
-            SetNewWaypoint(veh.parkingspot.x, veh.parkingspot.y)
-            QBCore.Functions.Notify("Your vehicle has been marked", "success")
-        end
-    elseif veh.state == 'Out' and findVehFromPlateAndLocate(veh.plate) then
-        QBCore.Functions.Notify("Your vehicle has been marked", "success")
+    if trackVehicleByPlate(veh.plate) then
+        notifyGarage('Garage', 'Your vehicle has been marked', '#2ecc71')
     else
-        QBCore.Functions.Notify("This vehicle cannot be located", "error")
+        notifyGarage('Garage', 'This vehicle cannot be located', '#e74c3c')
     end
     cb("ok")
 end)

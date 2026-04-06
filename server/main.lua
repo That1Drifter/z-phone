@@ -94,69 +94,6 @@ local function buildSuggestionData(player)
     }
 end
 
-local function normalizeImageUrl(url)
-    if type(url) ~= 'string' then return nil end
-    url = url:match('^%s*(.-)%s*$')
-    if not url or #url < 8 or #url > 1000 then return nil end
-    if not url:match('^https?://') then return nil end
-    return url
-end
-
-local function buildScreenshotUploadUrl(webhook)
-    local cleanWebhook = tostring(webhook or ''):match('^%s*(.-)%s*$')
-    if cleanWebhook == '' then
-        return ''
-    end
-
-    local isDiscord = cleanWebhook:find('discord.com/api/webhooks', 1, true)
-        or cleanWebhook:find('discordapp.com/api/webhooks', 1, true)
-
-    if isDiscord and not cleanWebhook:find('wait=', 1, true) then
-        if cleanWebhook:find('?', 1, true) then
-            return cleanWebhook .. '&wait=true'
-        end
-        return cleanWebhook .. '?wait=true'
-    end
-
-    return cleanWebhook
-end
-
-local function isDiscordWebhook(url)
-    if type(url) ~= 'string' then return false end
-    return url:find('discord.com/api/webhooks', 1, true)
-        or url:find('discordapp.com/api/webhooks', 1, true)
-end
-
-local function extractUploadedImageUrl(uploadData)
-    if type(uploadData) ~= 'string' or uploadData == '' then
-        return nil
-    end
-
-    local directUrl = normalizeImageUrl(uploadData:gsub('^"(.*)"$', '%1'))
-    if directUrl then return directUrl end
-
-    local ok, decoded = pcall(json.decode, uploadData)
-    if not ok or type(decoded) ~= 'table' then
-        return nil
-    end
-
-    if decoded[1] and type(decoded[1]) == 'table' then
-        decoded = decoded[1]
-    end
-
-    if decoded.body and type(decoded.body) == 'table' then
-        decoded = decoded.body
-    end
-
-    if decoded.attachments and decoded.attachments[1] then
-        local attachment = decoded.attachments[1]
-        local attachmentUrl = normalizeImageUrl(attachment.proxy_url or attachment.url)
-        if attachmentUrl then return attachmentUrl end
-    end
-
-    return normalizeImageUrl(decoded.url)
-end
-
 local function sendContactSuggestion(sourceId, targetId, radius)
     local src = tonumber(sourceId)
     local target = tonumber(targetId)
@@ -337,58 +274,6 @@ QBCore.Functions.CreateCallback('qb-phone:server:FetchResult', function(_, cb, i
     else
         cb(nil)
     end
-end)
-
-QBCore.Functions.CreateCallback('qb-phone:server:CaptureAndUploadPhoto', function(source, cb)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if not Player then
-        cb({ success = false, message = 'Player not found.' })
-        return
-    end
-
-    local webhook = buildScreenshotUploadUrl(Config.Webhook)
-    if webhook == '' then
-        cb({ success = false, message = 'Camera webhook is not configured.' })
-        return
-    end
-
-    local configuredField = tostring(Config.WebhookUploadField or ''):match('^%s*(.-)%s*$')
-    if configuredField == '' then
-        configuredField = 'file'
-    end
-
-    local uploadField = isDiscordWebhook(webhook) and 'file' or configuredField
-
-    exports['screenshot-basic']:requestClientScreenshot(src, {
-        encoding = 'jpg',
-        quality = 0.92,
-        uploadURL = webhook,
-        uploadField = uploadField,
-    }, function(err, uploadData)
-        if err then
-            cb({ success = false, message = 'Screenshot capture failed.' })
-            return
-        end
-
-        if not uploadData then
-            cb({ success = false, message = 'No response from upload server.' })
-            return
-        end
-
-        local imageUrl = extractUploadedImageUrl(uploadData)
-        if not imageUrl then
-            cb({ success = false, message = 'Upload succeeded but no image URL was returned.' })
-            return
-        end
-
-        exports.oxmysql:insert(
-            'INSERT INTO phone_gallery (`citizenid`, `image`) VALUES (?, ?)',
-            { Player.PlayerData.citizenid, imageUrl }
-        )
-
-        cb({ success = true, url = imageUrl })
-    end)
 end)
 
 QBCore.Functions.CreateCallback('qb-phone:server:GetNearbyPhonePlayers', function(source, cb)

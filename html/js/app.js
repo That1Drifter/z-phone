@@ -69,10 +69,9 @@ function IsAppJobBlocked(joblist, myjob) {
 
 function buildApplicationIcon(app) {
     var iconName = String((app && app.icon) || '');
-    var customStyle = app && app.style ? `style="${app.style}"` : '';
 
     if (iconName.startsWith('fa')) {
-        return `<i class="ApplicationIcon ${iconName}" ${customStyle}></i>`;
+        return `<i class="ApplicationIcon ${iconName}"></i>`;
     }
 
     var hasExtension = iconName.includes('.');
@@ -82,7 +81,7 @@ function buildApplicationIcon(app) {
         ? (iconName.endsWith('.png') ? `./img/apps/${baseName}.svg` : `./img/apps/${baseName}.png`)
         : `./img/apps/${iconName}.svg`;
 
-    return `<img class="ApplicationIcon" src="${primaryPath}" data-fallback-src="${fallbackPath}" onerror="if(this.dataset.fallbackSrc&&this.src!==this.dataset.fallbackSrc){this.src=this.dataset.fallbackSrc;}else{this.onerror=null;this.style.opacity='0.35';}" ${customStyle}>`;
+    return `<img class="ApplicationIcon" src="${primaryPath}" data-fallback-src="${fallbackPath}" onerror="if(this.dataset.fallbackSrc&&this.src!==this.dataset.fallbackSrc){this.src=this.dataset.fallbackSrc;}else{this.onerror=null;this.style.opacity='0.35';}">`;
 }
 
 QB.Phone.Functions.SetupApplications = function(data) {

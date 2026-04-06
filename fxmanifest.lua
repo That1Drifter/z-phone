@@ -35,6 +35,9 @@ files {
 
 lua54 'yes'
 
-dependency 'qb-target'
+dependencies {
+    'qb-target',
+    'screenshot-basic'
+}
 
 provide 'qb-phone'
