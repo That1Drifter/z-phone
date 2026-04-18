@@ -30,7 +30,6 @@
     box-sizing: border-box;
     background: linear-gradient(180deg, rgba(9, 15, 26, 0.96) 0%, rgba(9, 15, 26, 0.88) 82%, transparent 100%);
     border-bottom: 0.1vh solid rgba(125, 211, 252, 0.08);
-    backdrop-filter: blur(1.2vh);
     z-index: 5;
 }
 
@@ -385,7 +384,6 @@
     padding: 2vh;
     box-sizing: border-box;
     background: rgba(2, 6, 23, 0.74);
-    backdrop-filter: blur(0.45vh);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;

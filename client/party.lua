@@ -49,6 +49,19 @@ local inJob = false
 local GroupID = 0
 local GroupBlips = {}
 
+local function SyncJobStatus(groups)
+    if GroupID == 0 then
+        status = "WAITING"
+        return
+    end
+
+    if groups and groups[GroupID] and groups[GroupID].status then
+        status = groups[GroupID].status
+    else
+        status = "WAITING"
+    end
+end
+
 local function FindBlipByName(name)
     for i=1, #GroupBlips do
         if GroupBlips[i] and GroupBlips[i].name == name then
@@ -130,6 +143,7 @@ RegisterNUICallback('GetGroupsApp', function (_, cb)
 end)
 
 RegisterNetEvent('qb-phone:client:RefreshGroupsApp', function(Groups, finish)
+    SyncJobStatus(Groups)
     if finish then inJob = false end
     if inJob then return end
     SendNUIMessage({
@@ -141,8 +155,20 @@ end)
 RegisterNetEvent('qb-phone:client:UpdateGroupId', function(id)
     GroupID = id
     if id == 0 then
+        status = "WAITING"
+    end
+    if id == 0 then
         isGroupLeader = false
     end
+end)
+
+RegisterNetEvent("qb-phone:client:AddGroupStage", function(newStatus)
+    if newStatus and newStatus ~= "" then
+        status = newStatus
+        return
+    end
+
+    status = "WAITING"
 end)
 
 

@@ -338,17 +338,26 @@
 
         if (!state.invoices.length) {
             refs.invoicesList.append(
-                createEmptyState('fa-regular fa-circle-check', 'All clear', 'You have no outstanding invoices right now.')
+                createEmptyState('fa-regular fa-circle-check', 'All invoices resolved', 'You have no outstanding invoices. Keep up the good work!')
             );
             updateDashboardSummary();
             return;
         }
 
-        state.invoices.forEach((invoice) => {
+        // Sort invoices by age (newest first)
+        const sortedInvoices = state.invoices.slice().sort((a, b) => {
+            return (b.time || 0) - (a.time || 0);
+        });
+
+        sortedInvoices.forEach((invoice) => {
             const amount = normalizeAmount(invoice.amount);
             const card = document.createElement('article');
             card.className = 'bank-app-invoice';
             card.dataset.invoiceId = String(invoice.id);
+            
+            const ageInDays = getInvoiceAgeInDays(invoice.time);
+            const statusColor = getInvoiceStatusColor(invoice);
+            const statusText = ageInDays >= 7 ? 'OVERDUE' : (ageInDays >= 3 ? 'URGENT' : 'PENDING');
 
             const top = document.createElement('div');
             top.className = 'bank-app-invoice-top';
@@ -361,26 +370,35 @@
 
             const meta = document.createElement('div');
             meta.className = 'bank-app-invoice-meta';
-            meta.textContent = `Sender: ${sanitizeText(invoice.sender, 'Unknown sender', 48)}`;
+            meta.textContent = `From: ${sanitizeText(invoice.sender, 'Unknown sender', 48)}`;
+
+            const date = document.createElement('div');
+            date.className = 'bank-app-invoice-date';
+            date.textContent = `${formatInvoiceDate(invoice.time)} • ${ageInDays} day${ageInDays === 1 ? '' : 's'} ago`;
 
             const reason = document.createElement('div');
             reason.className = 'bank-app-invoice-reason';
             reason.textContent = getInvoiceReason(invoice);
 
-            info.append(title, meta, reason);
+            info.append(title, meta, date, reason);
+
+            const amountWrapper = document.createElement('div');
+            amountWrapper.className = 'bank-app-invoice-amount-wrapper';
+
+            const statusBadge = document.createElement('span');
+            statusBadge.className = 'bank-app-invoice-status-badge';
+            statusBadge.style.backgroundColor = statusColor;
+            statusBadge.textContent = statusText;
 
             const total = document.createElement('div');
             total.className = 'bank-app-invoice-amount';
             total.textContent = formatCurrency(amount);
 
-            top.append(info, total);
+            amountWrapper.append(statusBadge);
+            top.append(info, amountWrapper, total);
 
             const footer = document.createElement('div');
             footer.className = 'bank-app-invoice-footer';
-
-            const status = document.createElement('span');
-            status.className = 'bank-app-invoice-status';
-            status.textContent = getInvoiceStatus(invoice);
 
             const actions = document.createElement('div');
             actions.className = 'bank-app-invoice-buttons';
@@ -390,6 +408,7 @@
             payButton.className = 'bank-app-invoice-action pay-invoice';
             payButton.dataset.action = 'pay';
             payButton.setAttribute('aria-label', 'Pay invoice');
+            payButton.title = 'Accept and pay this invoice';
             const payIcon = document.createElement('i');
             payIcon.className = 'fa-solid fa-check';
             payButton.append(payIcon);
@@ -399,12 +418,13 @@
             declineButton.className = 'bank-app-invoice-action decline-invoice';
             declineButton.dataset.action = 'decline';
             declineButton.setAttribute('aria-label', 'Decline invoice');
+            declineButton.title = 'Reject this invoice';
             const declineIcon = document.createElement('i');
             declineIcon.className = 'fa-solid fa-xmark';
             declineButton.append(declineIcon);
 
             actions.append(payButton, declineButton);
-            footer.append(status, actions);
+            footer.append(actions);
             card.append(top, footer);
             refs.invoicesList.append(card);
         });
@@ -591,10 +611,15 @@
     async function handleInvoiceAction(action, invoiceId) {
         const invoice = state.invoices.find((entry) => String(entry.id) === String(invoiceId));
         if (!invoice) {
+            notify('fas fa-building-columns', 'Fleeca Digital', 'Invoice not found.', '#ef4444', 2300);
             return;
         }
 
         const endpoint = action === 'pay' ? 'PayInvoice' : 'DeclineInvoice';
+        const confirmMessage = action === 'pay'
+            ? `Pay $${normalizeAmount(invoice.amount)} to ${sanitizeText(invoice.sender || invoice.society, 'Invoice', 32)}?`
+            : `Decline invoice of $${normalizeAmount(invoice.amount)}?`;
+
         const result = await nuiPost(endpoint, { invoiceId: invoice.id });
 
         if (!result || !result.success) {
@@ -606,23 +631,60 @@
         renderInvoices();
 
         if (action === 'pay') {
-            updateBalance(result.newBalance);
+            if (result.newBalance !== undefined) {
+                updateBalance(result.newBalance);
+            }
             pushActivity({
-                icon: 'fa-solid fa-file-invoice-dollar',
+                icon: 'fa-solid fa-check-circle',
                 title: 'Invoice paid',
                 meta: `${sanitizeText(invoice.society || invoice.sender, 'Invoice', 48)} • ${getInvoiceReason(invoice)}`,
                 amount: -normalizeAmount(invoice.amount),
             });
+            notify('fas fa-building-columns', 'Fleeca Digital', `Invoice of $${normalizeAmount(invoice.amount)} paid successfully.`, '#22c55e', 2200);
         } else {
             pushActivity({
-                icon: 'fa-solid fa-ban',
+                icon: 'fa-solid fa-circle-xmark',
                 title: 'Invoice declined',
                 meta: `${sanitizeText(invoice.society || invoice.sender, 'Invoice', 48)} • ${getInvoiceReason(invoice)}`,
                 amount: 0,
             });
+            notify('fas fa-building-columns', 'Fleeca Digital', `Invoice declined.`, '#22c55e', 2200);
         }
+    }
 
-        notify('fas fa-building-columns', 'Fleeca Digital', result.message || 'Invoice updated.', '#22c55e', 2200);
+    async function getInvoiceDetails(invoiceId) {
+        try {
+            const result = await nuiPost('GetInvoiceDetails', { invoiceId });
+            return result && result.success ? result.invoice : null;
+        } catch {
+            return null;
+        }
+    }
+
+    function formatInvoiceDate(timestamp) {
+        try {
+            const date = new Date((timestamp || 0) * 1000);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch {
+            return 'Unknown date';
+        }
+    }
+
+    function getInvoiceAgeInDays(timestamp) {
+        const now = Math.floor(Date.now() / 1000);
+        const days = Math.floor((now - (timestamp || 0)) / 86400);
+        return days < 0 ? 0 : days;
+    }
+
+    function getInvoiceStatusColor(invoice) {
+        const days = getInvoiceAgeInDays(invoice.time);
+        if (days >= 7) {
+            return '#dc2626'; // red - overdue
+        }
+        if (days >= 3) {
+            return '#f59e0b'; // amber - warning
+        }
+        return '#3b82f6'; // blue - pending
     }
 
     function attachEvents() {

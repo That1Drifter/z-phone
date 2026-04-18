@@ -107,7 +107,6 @@ input.jobcenter-input-password, input.jobcenter-input-password2, .jobcenter-inpu
     width: 100%;
     height: 8vh;
     background: rgba(20, 20, 24, 0.8);
-    backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -184,7 +183,6 @@ input.jobcenter-input-password, input.jobcenter-input-password2, .jobcenter-inpu
 .job-class-body-job{
     color: white;
     background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
     transition: all 0.2s ease;
     width: 100%;
     height: auto;
@@ -291,7 +289,6 @@ input.jobcenter-input-password, input.jobcenter-input-password2, .jobcenter-inpu
     margin: 0 0 1.2vh 0;
     padding: 1.5vh;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
     transition: all 0.2s ease;
     color: whitesmoke;
     border-radius: 1.5vh;
@@ -438,7 +435,6 @@ input.jobcenter-input-password, input.jobcenter-input-password2, .jobcenter-inpu
     display: flex;
     align-items: center;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
 }

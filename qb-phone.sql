@@ -39,6 +39,10 @@ CREATE TABLE IF NOT EXISTS `phone_invoices` (
   `sender` varchar(50) DEFAULT NULL,
   `sendercitizenid` varchar(50) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `account_name` varchar(50) DEFAULT 'checking',
+  `status` varchar(20) DEFAULT 'pending',
+  `paid_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `citizenid` (`citizenid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;

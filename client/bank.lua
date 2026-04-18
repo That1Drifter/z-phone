@@ -121,6 +121,11 @@ RegisterNUICallback('PayInvoice', function(data, cb)
 end)
 
 RegisterNUICallback('DeclineInvoice', function(data, cb)
+    if isNuiRateLimited('decline-invoice', 900) then
+        cb({ success = false, message = 'Please wait a moment before trying again.' })
+        return
+    end
+
     local invoiceId = tonumber(data and data.invoiceId)
     if not invoiceId then
         cb({ success = false, message = 'Invalid invoice.' })
@@ -132,16 +137,69 @@ RegisterNUICallback('DeclineInvoice', function(data, cb)
     end, invoiceId)
 end)
 
+RegisterNUICallback('GetInvoiceDetails', function(data, cb)
+    if not data or not data.invoiceId then
+        cb({ success = false, message = 'Invalid invoice ID.' })
+        return
+    end
+
+    local invoiceId = tonumber(data.invoiceId)
+    local invoice = nil
+
+    for _, inv in pairs(PhoneData.Invoices) do
+        if inv.id == invoiceId then
+            invoice = inv
+            break
+        end
+    end
+
+    if not invoice then
+        cb({ success = false, message = 'Invoice not found.' })
+        return
+    end
+
+    cb({
+        success = true,
+        invoice = {
+            id = invoice.id,
+            sender = invoice.sender or 'Unknown Sender',
+            society = invoice.society or 'General Invoice',
+            amount = invoice.amount or 0,
+            timestamp = invoice.time or os.time(),
+            status = 'Pending',
+            reason = invoice.reason or 'No description provided'
+        }
+    })
+end)
+
+RegisterNUICallback('GetInvoiceStats', function(_, cb)
+    local totalPending = 0
+    local invoiceCount = 0
+
+    if PhoneData.Invoices then
+        for _, invoice in pairs(PhoneData.Invoices) do
+            invoiceCount = invoiceCount + 1
+            totalPending = totalPending + (tonumber(invoice.amount) or 0)
+        end
+    end
+
+    cb({
+        pendingCount = invoiceCount,
+        totalAmount = totalPending,
+        averageAmount = invoiceCount > 0 and math.floor(totalPending / invoiceCount) or 0
+    })
+end)
+
 -- Events
 RegisterNetEvent('qb-phone:client:RemoveBankMoney', function(amount)
     if amount > 0 then
         SendNUIMessage({
             action = "PhoneNotification",
             PhoneNotify = {
-                title = "Bank",
-                text = "$"..amount.." removed from your balance!",
-                icon = "fas fa-university",
-                color = "#ff002f",
+                title = "Withdrawal",
+                text = "$"..amount.." removed from your balance",
+                icon = "fas fa-arrow-down",
+                color = "#ef4444",
                 timeout = 3500,
             },
         })
@@ -153,10 +211,10 @@ RegisterNetEvent('qb-phone:client:AddBankMoney', function(amount)
         SendNUIMessage({
             action = "PhoneNotification",
             PhoneNotify = {
-                title = "Bank",
-                text = "$"..amount.." Added to your balance!",
-                icon = "fas fa-university",
-                color = "#ff002f",
+                title = "Deposit",
+                text = "$"..amount.." added to your balance",
+                icon = "fas fa-arrow-up",
+                color = "#22c55e",
                 timeout = 3500,
             },
         })
@@ -167,37 +225,63 @@ RegisterNetEvent("qb-phone-new:client:BankNotify", function(text)
     SendNUIMessage({
         action = "PhoneNotification",
         NotifyData = {
-            title = "Bank",
+            title = "Banking",
             content = text,
-            icon = "fas fa-university",
+            icon = "fas fa-building-columns",
             timeout = 3500,
-            color = "#ff002f",
+            color = "#0ea5e9",
+        },
+    })
+end)
+
+RegisterNetEvent('qb-phone:client:InvoiceNotification', function(sender, amount, invoiceId)
+    SendNUIMessage({
+        action = "PhoneNotification",
+        PhoneNotify = {
+            title = "Invoice Alert",
+            text = "$"..amount.." invoice from "..sender,
+            icon = "fas fa-file-invoice-dollar",
+            color = "#f59e0b",
+            timeout = 4500,
         },
     })
 end)
 
 RegisterNetEvent('qb-phone:client:AcceptorDenyInvoice', function(id, name, job, senderCID, amount, resource)
-    PhoneData.Invoices[#PhoneData.Invoices+1] = {
+    local invoiceData = {
         id = id,
         citizenid = QBCore.Functions.GetPlayerData().citizenid,
         sender = name,
         society = job,
         sendercitizenid = senderCID,
-        amount = amount
+        amount = amount,
+        time = os.time(),
+        status = 'pending'
     }
 
-    local success = exports['z-phone']:PhoneNotification("Invoice", 'Invoice of $'..amount.." Sent from "..name, 'fas fa-file-invoice-dollar', '#b3e0f2', "NONE", 'fas fa-check-circle', 'fas fa-times-circle')
+    table.insert(PhoneData.Invoices, invoiceData)
+
+    -- Show rich notification with actions
+    local success = exports['z-phone']:PhoneNotification(
+        "New Invoice",
+        'Invoice of $'..amount..' from '..name..' ('..job..')',
+        'fas fa-file-invoice-dollar',
+        '#f59e0b',
+        "NONE",
+        'fas fa-check-circle',
+        'fas fa-times-circle'
+    )
+
     if success then
-        local table = GetInvoiceFromID(id)
-        if table then
-            TriggerServerEvent('qb-phone:server:PayMyInvoice', id)
-        end
+        TriggerServerEvent('qb-phone:server:PayMyInvoice', id)
     else
-        local table = GetInvoiceFromID(id)
-        if table then
-            TriggerServerEvent('qb-phone:server:DeclineMyInvoice', id)
-        end
+        TriggerServerEvent('qb-phone:server:DeclineMyInvoice', id)
     end
+
+    SendNUIMessage({
+        action = "refreshInvoice",
+        invoices = PhoneData.Invoices,
+    })
 end)
 
 RegisterNetEvent('qb-phone:client:RemoveInvoiceFromTable', function(id)

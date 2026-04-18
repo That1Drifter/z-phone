@@ -230,17 +230,20 @@ local function LoadPhone()
         end
 
 
+        PhoneData.Invoices = {}
         if pData.Invoices and next(pData.Invoices) then
             for _, v in pairs(pData.Invoices) do
                 PhoneData.Invoices[#PhoneData.Invoices+1] = {
                     id = v.id,
-                    citizenid = QBCore.Functions.GetPlayerData().citizenid,
-                    sender = v.from,
-                    society = v.receiverAccountIdentifier,
-                    sendercitizenid = v.fromIdentifier,
+                    citizenid = v.citizenid or QBCore.Functions.GetPlayerData().citizenid,
+                    sender = v.sender or v.from,
+                    society = v.society or v.receiverAccountIdentifier,
+                    sendercitizenid = v.sendercitizenid or v.fromIdentifier,
                     amount = v.amount,
-                    reason = v.message,
-                    status = v.status
+                    reason = v.reason or v.message,
+                    status = v.status or 'pending',
+                    account_name = v.account_name or v.society or 'checking',
+                    created_at = v.time or v.created_at or os.time()
                 }
             end
         end

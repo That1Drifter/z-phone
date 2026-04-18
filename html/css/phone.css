@@ -1289,7 +1289,6 @@
     inset: 0;
     z-index: 120;
     background: rgba(5, 10, 16, 0.72);
-    backdrop-filter: blur(1.2vh);
     overflow: hidden;
 }
 
@@ -1622,7 +1621,6 @@
     inset: 0;
     z-index: 120;
     background: rgba(5, 10, 16, 0.72);
-    backdrop-filter: blur(1.2vh);
     overflow: hidden;
 }
 
@@ -1889,7 +1887,6 @@
     background: rgba(12, 18, 28, 0.82);
     border: 0.1vh solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(1.6vh);
 }
 
 .phone-app-footer-button {
@@ -1947,7 +1944,6 @@
     inset: 0;
     z-index: 120;
     background: rgba(5, 10, 16, 0.72);
-    backdrop-filter: blur(1.2vh);
 }
 
 .phone-nearby-share-sheet {
@@ -2121,7 +2117,6 @@
     height: 100%;
     font-family: 'Barlow Condensed', sans-serif;
     background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
     z-index: 1000;
 }
 

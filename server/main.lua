@@ -54,6 +54,14 @@ local function isOnCooldown(cache, key, durationMs)
     return false
 end
 
+local function queryAsync(query, params)
+    local p = promise.new()
+    exports.oxmysql:execute(query, params or {}, function(result)
+        p:resolve(result or {})
+    end)
+    return p
+end
+
 local function hasStoredContactConflict(citizenId, number, ignoreName, ignoreNumber)
     local storedContacts = exports.oxmysql:executeSync('SELECT name, number FROM player_contacts WHERE citizenid = ?', {citizenId})
 
@@ -144,9 +152,6 @@ end)
 QBCore.Functions.CreateCallback('qb-phone:server:GetPhoneData', function(source, cb)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    if not Player or not src then return end
-    local CID = Player.PlayerData.citizenid
-
     local PhoneData = {
         PlayerContacts = {},
         Chats = {},
@@ -160,17 +165,29 @@ QBCore.Functions.CreateCallback('qb-phone:server:GetPhoneData', function(source,
         ChatRooms = {},
     }
 
-    local result = exports.oxmysql:executeSync('SELECT * FROM player_contacts WHERE citizenid = ? ORDER BY name ASC', {CID})
+    if not Player or not src then
+        cb(PhoneData)
+        return
+    end
+
+    local CID = Player.PlayerData.citizenid
+
+    local contactsPromise = queryAsync('SELECT * FROM player_contacts WHERE citizenid = ? ORDER BY name ASC', {CID})
+    local invoicesPromise = queryAsync('SELECT * FROM phone_invoices WHERE citizenid = ? ORDER BY id DESC', {CID})
+    local notesPromise = queryAsync('SELECT * FROM phone_note WHERE citizenid = ?', {CID})
+
+    local result = Citizen.Await(contactsPromise)
+    local Invoices = Citizen.Await(invoicesPromise)
+    local Note = Citizen.Await(notesPromise)
+
     if result[1] then
         PhoneData.PlayerContacts = result
     end
 
-    local Invoices = exports.oxmysql:executeSync('SELECT * FROM pefcl_invoices WHERE toIdentifier = ?', {CID})
     if Invoices[1] then
         PhoneData.Invoices = Invoices
     end
 
-    local Note = exports.oxmysql:executeSync('SELECT * FROM phone_note WHERE citizenid = ?', {CID})
     if Note[1] then
         PhoneData.Documents = Note
     end

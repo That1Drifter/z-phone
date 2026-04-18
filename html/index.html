@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.9/purify.min.js" integrity="sha512-VOTFfd4vxPpuE98m9UQTN7j2N2/Blw44lZMhRTnZQqA2gOHq7Yvn5bdIDjjAZuFqqkDtppcjMW+dN3GYbhM94g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.9/purify.min.js" integrity="sha512-VOTFfd4vxPpuE98m9UQTN7j2N2/Blw44lZMhRTnZQqA2gOHq7Yvn5bdIDjjAZuFqqkDtppcjMW+dN3GYbhM94g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Bebas+Neue&family=Grand+Hotel&family=Inter:wght@400;500;600;700&family=Josefin+Sans:wght@300;400&family=Poppins:wght@400;500;600&family=Teko:wght@300;400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Bebas+Neue&family=Grand+Hotel&family=Inter:wght@400;500;600;700&family=Josefin+Sans:wght@300;400&family=Poppins:wght@400;500;600&family=Teko:wght@300;400;500;600;700&family=Yellowtail&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Bebas+Neue&family=Grand+Hotel&family=Inter:wght@400;500;600;700&family=Josefin+Sans:wght@300;400&family=Poppins:wght@400;500;600&family=Teko:wght@300;400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet"></noscript>
     <!-- Font Awesome File's -->
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css"/>
+    <link rel="preload" as="style" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.2.0/css/all.css"/></noscript>
     <title>z-phone</title>
 
     <!-- CSS File's -->
@@ -32,12 +34,13 @@
     <link rel="stylesheet" href="./css/party.css">
 
     <!--  CDN's -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <!-- JQuery -->
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <!-- JQuery -->
     <!-- Modern emoji picker - Native implementation in message.js (no external library needed) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> <!-- Bootstrap -->
-    <script src="https://code.jquery.com/color/jquery.color-2.2.0.min.js" integrity="sha256-aSe2ZC5QeunlL/w/7PsVKmV+fa0eDbmybn/ptsKHR6I=" crossorigin="anonymous"></script> <!--Color CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> <!-- Bootstrap -->
+    <script defer src="https://code.jquery.com/color/jquery.color-2.2.0.min.js" integrity="sha256-aSe2ZC5QeunlL/w/7PsVKmV+fa0eDbmybn/ptsKHR6I=" crossorigin="anonymous"></script> <!--Color CDN -->
     <!-- No longer using EmojiOneArea - replaced with custom vanilla JS emoji picker -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> <!-- Bootstrap -->
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"> <!-- Bootstrap -->
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"></noscript>
 </head>
     <body style="background-color: transparent !important">
         <!-- Full-screen image viewer overlay -->
@@ -600,35 +603,35 @@
 
                             <div class="background-options">
                                 <div class="background-option" data-background="zphone-1">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-1.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-1.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Vanilla</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-2">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-2.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-2.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Krishan-Arjun</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-3">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-3.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-3.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Supra</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-4">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-4.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-4.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Spiderman</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-5">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-5.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-5.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Blue-Sky</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-6">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-6.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-6.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Orange Abstract</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-7">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-7.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-7.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Red Moon</div>
                                 </div>
                                 <div class="background-option" data-background="zphone-8">
-                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-8.png" class="phone-backgrounds"></div>
+                                    <div class="background-option-icon"><img src="./img/backgrounds/zphone-8.png" class="phone-backgrounds" loading="lazy" decoding="async"></div>
                                     <div class="background-option-title">Cyberpunk</div>
                                 </div>
                                 <div class="background-option" data-background="custom-background">
@@ -739,7 +742,7 @@
 
                     <!-- Start Ping App -->
                     <div class="ping-app">
-                        <img class="imagepingapp" src="img/map.png">
+                        <img class="imagepingapp" src="img/map.png" loading="lazy" decoding="async">
                         <div class="ping-header">
                             <input class="ping-menu-text ierplol" type="number" maxlength="4"><i class="fa-solid fa-id-card-clip" id="ping-menu-icon"></i>
                             <div style="display: block;" id="ping-send" class="ping-sender-piinger"><i class="fa-solid fa-map-pin"></i>SEND PING</div>

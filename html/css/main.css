@@ -123,7 +123,6 @@ body {
 
 .volume-hud-inner {
     background: rgba(20, 20, 20, 0.88);
-    backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 2vh;
     padding: 0.8vh 1.5vh;
@@ -365,7 +364,6 @@ body {
 /* Widget Styles */
 .phone-widget {
     background: rgba(30, 30, 30, 0.6);
-    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 2.5vh;
     padding: 1.5vh;
@@ -598,7 +596,6 @@ body {
     align-items: center;
     gap: 1vh;
     background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(30px);
     border-radius: 1vh;
     border: 0.5px solid rgba(255, 255, 255, 0.1);
 }
@@ -893,8 +890,6 @@ body {
     min-width: 22vh;
     max-width: 82%;
     background: linear-gradient(135deg, rgba(14, 22, 17, 0.97) 0%, rgba(8, 18, 12, 0.97) 100%);
-    backdrop-filter: blur(10px) saturate(1.2);
-    -webkit-backdrop-filter: blur(10px) saturate(1.2);
     border: 1px solid rgba(52, 199, 89, 0.38);
     border-top: 1px solid rgba(52, 199, 89, 0.55);
     margin: 0 auto;
@@ -1018,7 +1013,6 @@ body {
     height: 10%;
     width: 92%;
     background: rgba(15, 15, 15, 0.92);
-    backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin: 0 auto;
     left: 0;
@@ -1110,7 +1104,6 @@ body {
     height: 10%;
     width: 92%;
     background: rgba(15, 15, 15, 0.92);
-    backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin: 0 auto;
     left: 0;
@@ -1184,13 +1177,11 @@ body {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(2px);
     border-radius: 3vh;
 }
 
 .feedback-container {
     background: rgba(30, 30, 30, 0.95);
-    backdrop-filter: blur(20px);
     padding: 3vh 4vh;
     border-radius: 2.5vh;
     display: flex;
