@@ -10,7 +10,7 @@ shared_scripts {
     'config.lua',
     'shared/bridge.lua',
     --'@qb-apartments/config.lua',
-    '@z-garages/config.lua',
+    '@z-garages/config.lua',  -- Garages config, used for parking locations and impound lot (Comment out if you don't use z-garages will update in future for qbox/qbcore compatibility)
     '@ox_lib/init.lua',
 }
 
