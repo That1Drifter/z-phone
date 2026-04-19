@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 ---- EMPLOYMENT (GROUP APPS)
 
@@ -365,3 +365,4 @@ local function CreateGroup(src, name, password)
     TriggerClientEvent('qb-phone:client:RefreshGroupsApp', -1, EmploymentGroup)
     return id
 end exports('CreateGroup', CreateGroup)
+

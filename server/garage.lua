@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 local function sanitizePlate(plate)
     if type(plate) ~= 'string' then return nil end
@@ -170,3 +170,4 @@ QBCore.Functions.CreateCallback('qb-phone:server:GetGarageVehicles', function(so
         cb({})
     end
 end)
+

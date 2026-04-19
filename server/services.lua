@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 local function buildAvailableServices()
     local Services = {}
@@ -63,3 +63,4 @@ end
 QBCore.Functions.CreateCallback('qb-phone:server:GetAvailableServices', function(_, cb)
     cb(buildAvailableServices())
 end)
+

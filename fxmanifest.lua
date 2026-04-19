@@ -8,6 +8,7 @@ ui_page 'html/index.html'
 
 shared_scripts {
     'config.lua',
+    'shared/bridge.lua',
     --'@qb-apartments/config.lua',
     '@z-garages/config.lua',
     '@ox_lib/init.lua',
@@ -36,7 +37,6 @@ files {
 lua54 'yes'
 
 dependencies {
-    'qb-target',
     'screenshot-basic'
 }
 

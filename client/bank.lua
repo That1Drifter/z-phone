@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 local NUIActionCooldowns = {}
 
 local function isNuiRateLimited(action, durationMs)
@@ -295,3 +295,4 @@ RegisterNetEvent('qb-phone:client:RemoveInvoiceFromTable', function(id)
         })
     end
 end)
+

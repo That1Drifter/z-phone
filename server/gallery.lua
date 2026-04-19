@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 local MAX_GALLERY_IMAGES = 50
 local DEFAULT_TRUSTED_CAMERA_HOSTS = {
@@ -151,3 +151,4 @@ RegisterNetEvent('qb-phone:server:RemoveImageFromGallery', function(data)
         { Player.PlayerData.citizenid, image }
     )
 end)
+

@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 local function loadAvailableServices(cb)
     QBCore.Functions.TriggerCallback('qb-phone:server:GetAvailableServices', function(drivers)

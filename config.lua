@@ -1,5 +1,13 @@
 Config = Config or {}
 
+-- Core Compatibility
+-- framework: 'auto' | 'qb' | 'qbox'
+-- inventory: 'auto' | 'qb' | 'ox'
+-- target: 'auto' | 'qb' | 'ox'
+Config.Framework = 'auto'
+Config.Inventory = 'auto'
+Config.Target = 'auto'
+
 -- Configs for Payment and Banking
 
 Config.RenewedBanking = false -- Either put this to true or false if you use Renewed Banking or not
@@ -9,7 +17,7 @@ Config.BillingCommissions = { -- This is a percentage (0.10) == 10%
 }
 
 Config.Webhook = ''
-Config.VPNItem = 'vpn' -- create a item named 'vpn' in your qb-core shared items for this to work, if you want to use the vpn for anonymous pings
+Config.VPNItem = 'vpn' -- item name used for anonymous ping/pulse features (must exist in your active inventory)
 Config.SellGarage = 'altastreet' -- set this to a garage that is not used for anything else, this is where vehicles will be sent when sold to players
 Config.Timeout = 30 -- Set this to how long you want the player to have to accept the ping, after they accept it the blip will appear on their map for the duration of Config.BlipDuration
 

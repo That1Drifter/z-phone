@@ -88,3 +88,4 @@ end)
 RegisterCommand('notify', function()
     TriggerEvent('qb-phone:client:CustomNotification', "PING", ' Incoming Ping', 'fas fa-map-pin', '#b3e0f2', 1000)
 end)
+

@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 local NUIActionCooldowns = {}
 
 local function isNuiRateLimited(action, durationMs)
@@ -29,7 +29,7 @@ end
 RegisterNUICallback('GetPulses', function(_, cb)
     QBCore.Functions.TriggerCallback('qb-phone:server:GetServerPulses', function(serverPulses)
         PhoneData.Pulses = serverPulses
-        local hasVPN = QBCore.Functions.HasItem(Config.VPNItem)
+        local hasVPN = PhoneBridge.HasItem(Config.VPNItem)
         cb({
             PulseData = PhoneData.Pulses,
             hasVPN = hasVPN,
@@ -140,7 +140,7 @@ RegisterNetEvent('qb-phone:client:UpdatePulses', function(src, Pulses, delete)
         })
     end
 
-    local hasVPN = QBCore.Functions.HasItem(Config.VPNItem)
+    local hasVPN = PhoneBridge.HasItem(Config.VPNItem)
 
     SendNUIMessage({
         action = "UpdatePulses",

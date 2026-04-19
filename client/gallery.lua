@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 RegisterNUICallback('GetGalleryData', function(_, cb)
     QBCore.Functions.TriggerCallback('qb-phone:server:fetchImages', function(images)
@@ -11,3 +11,4 @@ RegisterNUICallback('DeleteImage', function(data, cb)
     TriggerServerEvent('qb-phone:server:RemoveImageFromGallery', data)
     cb(true)
 end)
+

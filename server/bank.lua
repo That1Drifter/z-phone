@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 local ActionCooldowns = {
     transfer = {},
     payInvoice = {},
@@ -459,3 +459,4 @@ QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'},
         TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
     end
 end)
+

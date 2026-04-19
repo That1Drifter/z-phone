@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 NoVPN = {}
 local status = "WAITING"
 
@@ -11,7 +11,7 @@ CreateThread(function ()
 end)
 
 RegisterNUICallback('GetJobCentersJobs', function(data, cb)
-    local result = QBCore.Functions.HasItem( "vpn")
+    local result = PhoneBridge.HasItem(Config.VPNItem)
     if result then
         cb(Config.JobCenter)
     else

@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 Proxis = {}
 local ProxiID = 0
 local ProxiPostCooldowns = {}
@@ -63,3 +63,4 @@ RegisterNetEvent('qb-phone:server:flagProxi', function(number)
     -- Add some type of log here for admins to keep track of flagged posts
     TriggerClientEvent('QBCore:Notify', src, 'Post by '..name.. ' ['..citizenid..'] has been flagged', 'error')
 end)
+

@@ -6,6 +6,30 @@
 
 **Z-Phone** is a highly customized, fully redesigned smartphone resource for the QBCore Framework. Built from the ground up to replace the clunky, outdated interfaces of older phone scripts, Z-Phone introduces a modern, dark-mode, frosted-glass aesthetic designed for high-tier roleplay servers and content creators.
 
+## Qbox and Ox Stack Compatibility
+
+Z-Phone now supports:
+
+1. QBCore (`qb-core`)
+2. Qbox (`qbx_core` with the QB bridge enabled)
+3. `ox_inventory` or QB inventory item checks
+4. `ox_target` or `qb-target` public phone targeting
+5. `ox_lib` UI helpers (input + notify)
+
+### Compatibility config
+
+In `config.lua` you can choose explicit backends or keep auto-detection:
+
+```lua
+Config.Framework = 'auto' -- auto | qb | qbox
+Config.Inventory = 'auto' -- auto | qb | ox
+Config.Target = 'auto'    -- auto | qb | ox
+```
+
+### Qbox note
+
+If you run Qbox, keep the QB bridge enabled (`qbx:enablebridge true`) so `exports['qb-core']:GetCoreObject()` compatibility remains available for legacy resources.
+
 ---
 
 ## 📸 Screenshots

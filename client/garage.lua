@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 -- Functions
 
@@ -74,3 +74,4 @@ RegisterNetEvent('qb-phone:client:updateGarages', function()
         action = "UpdateGarages",
     })
 end)
+

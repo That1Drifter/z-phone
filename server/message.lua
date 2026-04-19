@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 -- Security: Rate limiting to prevent spam/exploits
 local MessageRateLimit = {}

@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 RegisterNetEvent("qb-phone:server:sendPing", function(id)
     local src = source

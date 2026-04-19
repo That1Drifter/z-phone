@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = PhoneCore
 
 --- Global Variables ---
 PlayerData = QBCore.Functions.GetPlayerData()
@@ -103,6 +103,8 @@ local function hasPhone()
             end
         end
     end
+
+    return PhoneBridge.HasItem('phone')
 end exports('hasPhone', hasPhone)
 
 local function IsPhoneOpen()
@@ -197,17 +199,7 @@ local PublicPhoneobject = {
     -1559354806
 }
 
-exports["qb-target"]:AddTargetModel(PublicPhoneobject, {
-    options = {
-        {
-            type = "client",
-            event = "qb-phone:client:publicphoneopen",
-            icon = "fas fa-phone-volume",
-            label = "Public Phone",
-        },
-    },
-    distance = 1.0
-})
+PhoneBridge.RegisterPublicPhoneTargets(PublicPhoneobject, 'qb-phone:client:publicphoneopen')
 
 
 local function LoadPhone()
@@ -304,7 +296,7 @@ local function OpenPhone()
         PhoneData.PlayerData = PlayerData
         SetNuiFocus(true, true)
 
-        local hasVPN = QBCore.Functions.HasItem(Config.VPNItem)
+        local hasVPN = PhoneBridge.HasItem(Config.VPNItem)
 
         SendNUIMessage({
             action = "open",
@@ -336,7 +328,7 @@ local function OpenPhone()
 
         updateTime()
     else
-        QBCore.Functions.Notify("You don't have a phone?", "error")
+        PhoneBridge.NotifyClient("You don't have a phone?", "error")
     end
 end
 
@@ -514,7 +506,7 @@ RegisterCommand('phone', function()
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
             OpenPhone()
         else
-            QBCore.Functions.Notify("Action not available at the moment..", "error")
+            PhoneBridge.NotifyClient("Action not available at the moment..", "error")
         end
     end
 end) RegisterKeyMapping('phone', 'Open Phone', 'keyboard', 'M')
@@ -524,7 +516,7 @@ RegisterCommand("+answer", function()
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and hasPhone() then
             AnswerCall()
         else
-            QBCore.Functions.Notify("Action not available at the moment..", "error")
+            PhoneBridge.NotifyClient("Action not available at the moment..", "error")
         end
     end
 end) RegisterKeyMapping('+answer', 'Answer Phone Call', 'keyboard', 'Y')
@@ -534,7 +526,7 @@ RegisterCommand("+decline", function()
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
             CancelCall()
         else
-            QBCore.Functions.Notify("Action not available at the moment..", "error")
+            PhoneBridge.NotifyClient("Action not available at the moment..", "error")
         end
     end
 end) RegisterKeyMapping('+decline', 'Decline Phone Call', 'keyboard', 'J')
@@ -809,7 +801,7 @@ RegisterNUICallback('CallContact', function(data, cb)
 
     data.ContactData.number = safeNumber
     data.ContactData.name = safeName
-    local hasVPN = QBCore.Functions.HasItem(Config.VPNItem)
+    local hasVPN = PhoneBridge.HasItem(Config.VPNItem)
     QBCore.Functions.TriggerCallback('qb-phone:server:GetCallState', function(CanCall, IsOnline)
         local status = {
             CanCall = CanCall,
@@ -852,10 +844,10 @@ RegisterNUICallback("TakePhoto", function(_, cb)
         if result and result.success and result.url then
             TriggerServerEvent('qb-phone:server:getImageFromGallery')
             cb(json.encode(result.url))
-            QBCore.Functions.Notify('Photo saved!', 'success')
+            PhoneBridge.NotifyClient('Photo saved!', 'success')
         else
             cb(json.encode({ url = nil }))
-            QBCore.Functions.Notify((result and result.message) or 'Photo upload failed.', 'error')
+            PhoneBridge.NotifyClient((result and result.message) or 'Photo upload failed.', 'error')
         end
 
         OpenPhone()
@@ -875,7 +867,7 @@ RegisterNUICallback("TakePhoto", function(_, cb)
             OpenPhone()
             break
         elseif IsControlJustPressed(1, 176) then
-            QBCore.Functions.Notify('Touching up photo...', 'primary')
+            PhoneBridge.NotifyClient('Touching up photo...', 'primary')
 
             if GetResourceState('screenshot-basic') ~= 'started' then
                 finishCameraCapture({ success = false, message = 'screenshot-basic is not started.' })
@@ -981,10 +973,10 @@ RegisterNUICallback('phone-silent-button', function(_, cb)
     PhoneSettings.muted = not PhoneSettings.muted
     if PhoneSettings.muted then
         PhoneSettings.vibrate = false
-        QBCore.Functions.Notify("Silent Mode On", "success")
+        PhoneBridge.NotifyClient("Silent Mode On", "success")
         cb(true)
     else
-        QBCore.Functions.Notify("Silent Mode Off", "error")
+        PhoneBridge.NotifyClient("Silent Mode Off", "error")
         cb(false)
     end
     -- Persist to metadata
@@ -1263,7 +1255,7 @@ RegisterNetEvent('qb-phone:client:GiveContactDetails', function()
         local PlayerId = GetPlayerServerId(player)
         TriggerServerEvent('qb-phone:server:GiveContactDetails', PlayerId)
     else
-        QBCore.Functions.Notify("No one nearby!", "error")
+        PhoneBridge.NotifyClient("No one nearby!", "error")
     end
 end)
 
@@ -1288,3 +1280,4 @@ RegisterNetEvent('qb-phone:RefreshPhone', function()
         })
     end)
 end)
+
